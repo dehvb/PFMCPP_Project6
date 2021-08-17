@@ -68,7 +68,7 @@ name(myName)
 
 struct CompareBear                                //4
 {
-    auto* compare(T* a, T* b) //5
+    T* compare(T* a, T* b) //5
     {
         if( a!= nullptr && b != nullptr)
         {
@@ -76,9 +76,7 @@ struct CompareBear                                //4
             if( a->value > b->value ) return b;
         }
         
-        //return nullptr; //error: cannot deduce return type 'auto *' from returned value of type 'nullptr_t'
-        T* nullpointer = nullptr; //weird, but works
-        return nullpointer;
+        return nullptr;
     }
 };
 
@@ -127,12 +125,9 @@ struct UpdateR
             std::cout << "U's uFlt2 updated value: " << that->uFlt2 << std::endl;
             return that->uFlt2 * that->uFlt1;
         }
-        else
-        {
-            std::cout << "Please check your pointers. Returning 0." << std::endl;
-            return 0.f;
-        }
-        
+
+        std::cout << "Please check your pointers. Returning 0." << std::endl;
+        return 0.f;
     }
 };
         
