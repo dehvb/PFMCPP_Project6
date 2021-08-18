@@ -37,13 +37,11 @@ name(myName)
 
 struct CompareBear                                //4
 {
-    T* compare(T* a, T* b) //5
+    T* compare(T& a, T& b) //5
     {
-        if( a!= nullptr && b != nullptr)
-        {
-            if( a->value < b->value ) return a;
-            if( a->value > b->value ) return b;
-        }
+        
+        if( a.value < b.value ) return &a;
+        if( a.value > b.value ) return &b;
         
         return nullptr;
     }
@@ -52,16 +50,10 @@ struct CompareBear                                //4
 struct U
 {
     float uFlt1 { 0 }, uFlt2 { 0 };
-    float updatingMmbFunc(float* nuMmbFlt)      //12
+    float updatingMmbFunc(const float& nuMmbFlt)      //12
     {
-        if(nuMmbFlt == nullptr)
-        {
-            std::cout << "Please check your pointer. Returning 0." << std::endl;
-            return 0.f;
-        }
-
         std::cout << "U's uFlt1 value: " << this->uFlt1 << std::endl;
-        this->uFlt1 = *nuMmbFlt;
+        this->uFlt1 = nuMmbFlt;
         std::cout << "U's uFlt1 updated value: " << this->uFlt1 << std::endl;
         while( std::abs(this->uFlt2 - this->uFlt1) > 0.001f )
         {
@@ -77,26 +69,20 @@ struct U
 
 struct UpdateR
 {
-    static float updatingFunc(U* that, float* nuFlt )        //10
+    static float updatingFunc(U& that, const float& nuFlt )        //10
     {
-        if(that != nullptr && nuFlt != nullptr)
+        std::cout << "U's uFlt1 value: " << that.uFlt1 << std::endl;
+        that.uFlt1 = nuFlt;
+        std::cout << "U's uFlt1 updated value: " << that.uFlt1 << std::endl;
+        while( std::abs(that.uFlt2 - that.uFlt1) > 0.001f )
         {
-            std::cout << "U's uFlt1 value: " << that->uFlt1 << std::endl;
-            that->uFlt1 = *nuFlt;
-            std::cout << "U's uFlt1 updated value: " << that->uFlt1 << std::endl;
-            while( std::abs(that->uFlt2 - that->uFlt1) > 0.001f )
-            {
-                /*
-                write something that makes the distance between that-><#name2#> and that-><#name1#> get smaller
-                */
-                that->uFlt2 += 0.0005f;
-            }
-            std::cout << "U's uFlt2 updated value: " << that->uFlt2 << std::endl;
-            return that->uFlt2 * that->uFlt1;
+            /*
+            write something that makes the distance between that-><#name2#> and that-><#name1#> get smaller
+            */
+            that.uFlt2 += 0.0005f;
         }
-
-        std::cout << "Please check your pointers. Returning 0." << std::endl;
-        return 0.f;
+        std::cout << "U's uFlt2 updated value: " << that.uFlt2 << std::endl;
+        return that.uFlt2 * that.uFlt1;
     }
 };
         
@@ -120,15 +106,15 @@ int main()
     T t2(3, "t2");                                             //6
     
     CompareBear f;                                            //7
-    auto* smaller = f.compare(&t1, &t2);                              //8
+    auto* smaller = f.compare(t1, t2);                              //8
     std::cout << "the smaller one is " << (smaller != nullptr ? smaller->name : "- neither, invalid pointer or same") << std::endl; //9
     
     U u1;
     float updatedValue = 5.f;
-    std::cout << "[static func] u1's multiplied values: " << UpdateR::updatingFunc(&u1, &updatedValue) << std::endl;                  //11
+    std::cout << "[static func] u1's multiplied values: " << UpdateR::updatingFunc(u1, updatedValue) << std::endl;                  //11
     
     U u2;
-    std::cout << "[member func] u2's multiplied values: " << u2.updatingMmbFunc(&updatedValue) << std::endl;
+    std::cout << "[member func] u2's multiplied values: " << u2.updatingMmbFunc(updatedValue) << std::endl;
 }
 
         
